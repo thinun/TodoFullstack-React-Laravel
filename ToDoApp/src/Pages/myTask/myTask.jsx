@@ -148,7 +148,7 @@ const MyTask = () => {
 
                     <div key={task.id}>
                         {loading && <div>Loading...</div>}
-                        <UpComingTaskCard task={task.task} desc={task.description} date={task.date} taskId={task.id}
+                        <UpComingTaskCard task={task.task} desc={task.description} date={task.date}
                                           fetchDataAPI={fetchDataAPI}/>
                     </div>
                 ))

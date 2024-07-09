@@ -33,11 +33,6 @@ const CalendarPage = () => {
 
 
 
-// today date
-    const todayDate = format(new Date(), 'yyyy/MM/dd');
-
-
-
 // using use Effect to call the fetch api function
 
     useEffect(() => {
@@ -65,6 +60,8 @@ const CalendarPage = () => {
     }
 
 
+
+
     return (
         <>
             <div>
@@ -77,13 +74,15 @@ const CalendarPage = () => {
                             {tasks.map((task) => (
                                 isToday(new Date(task.date)) ? (
                                         <div key={task.id} >
-                                            <UpComingTaskCard task={task.task} desc={task.description} date={task.date}
+                                            <UpComingTaskCard  key={task.id} task={task.task} desc={task.description} date={task.date}
                                                               taskId={task.id}
                                                               fetchDataAPI={fetchDataAPI}/>
                                         </div>
 
                                 ) : null
                             ))}
+
+
 
                         </div>
                         <div className={'calendar-desktop'}>

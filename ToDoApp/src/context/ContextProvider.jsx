@@ -1,15 +1,17 @@
-import {createContext, useContext, useState, useCallback} from 'react';
+import { createContext, useContext, useState, useCallback } from 'react';
 import axiosClient from "@/axios-client.js";
+
 
 // Create the globalContext
 const GlobalContext = createContext({
     tasks: [],
     setTasks: () => {},
-    fetchDataAPI: () => {}
+    fetchDataAPI: () => {},
+    deleteTask: () => {}
 });
 
 // Create the ContextProvider component
-export const ContextProvider = ({children}) => {
+export const ContextProvider = ({ children }) => {
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -23,15 +25,27 @@ export const ContextProvider = ({children}) => {
             })
             .catch((error) => {
                 setError("Failed to fetch data");
-                if (error) {
-                    alert(error.message);
-                }
+                alert(error.message);
                 setLoading(false);
             });
     }, []);
 
+    const deleteTask = useCallback((id) => {
+        setLoading(true);
+        axiosClient.delete(`/tasks/${id}`)
+            .then(() => {
+                fetchDataAPI(); // Fetch updated tasks after deletion
+            })
+            .catch((err) => {
+                console.error(err);
+                alert('Failed to delete task.');
+                setLoading(false);
+            });
+    }, [fetchDataAPI]);
+
+
     return (
-        <GlobalContext.Provider value={{tasks, setTasks, fetchDataAPI, loading, error}}>
+        <GlobalContext.Provider value={{ tasks, setTasks, fetchDataAPI, loading, error, deleteTask }}>
             {children}
         </GlobalContext.Provider>
     );

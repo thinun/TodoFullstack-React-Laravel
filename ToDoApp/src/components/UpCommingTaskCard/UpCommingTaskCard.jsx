@@ -18,19 +18,24 @@ import {format} from "date-fns";
 import {Calendar} from "@/components/ui/calendar.jsx";
 import {useEffect, useState} from "react";
 import axiosClient from "@/axios-client.js";
+import {useGlobalContext} from "@/context/ContextProvider.jsx";
 
 
-const UpComingTaskCard = ({task, desc, date, taskId,fetchDataAPI}) => {
+const UpComingTaskCard = ({task, desc, date, taskId, fetchDataAPI}) => {
     const [selectDate, SetSelectDate] = useState()
     const [taskName, setTaskName] = useState()
     const [description, setDescription] = useState()
     const [isDialogOpen, setIsDialogOpen] = useState(false)
 
+    const {deleteTask} = useGlobalContext()
+
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+
     useEffect(() => {
         setTaskName(task)
         setDescription(desc)
         SetSelectDate(date)
-    }, [task, desc, date]);
+    }, [task, desc, date,fetchDataAPI]);
 
 
 // function to update tasks
@@ -43,17 +48,28 @@ const UpComingTaskCard = ({task, desc, date, taskId,fetchDataAPI}) => {
             date: formatedDate
         }
         axiosClient.put(`/tasks/${taskId}`, payload).then((response) => {
-            if (response.status===201){
-                alert('Task Updated Successfully')
+            if (response.status === 201) {
+                console.log('task added successfully')
             }
             console.log(response)
-      //to refresh the page calling the fetchAPi function from myTask page
-            fetchDataAPI()
+            //to refresh the page calling the fetchAPi function from myTask page
+           fetchDataAPI()
         }).catch((error) => {
             console.log(error)
         })
 
     }
+
+// function to delete task
+    const handleDeleteButton = () => {
+        setIsDeleteOpen(false)
+        deleteTask(taskId)
+    }
+
+    const handleCancelButton = () => {
+        setIsDeleteOpen(false)
+    }
+
 
     return (
         <div className={'MobileTaskCard bg-gray-100 w-full flex flex-row rounded-2xl mt-4'}>
@@ -93,12 +109,12 @@ const UpComingTaskCard = ({task, desc, date, taskId,fetchDataAPI}) => {
                                             <div className="flex flex-col items-start gap-4">
                                                 <Input
                                                     id="EditTask"
-                                                    defaultValue="Add Task"
+                                                    defaultValue={task}
                                                     className="col-span-3"
                                                     onChange={(e) => setTaskName(e.target.value)}/>
                                                 <Input
                                                     id="EditDescription"
-                                                    defaultValue="Description"
+                                                    defaultValue={description}
                                                     className="col-span-3"
                                                     onChange={(e) => setDescription(e.target.value)}/>
                                                 <div>
@@ -119,7 +135,7 @@ const UpComingTaskCard = ({task, desc, date, taskId,fetchDataAPI}) => {
                                                         <PopoverContent className="w-auto p-0">
                                                             <Calendar
                                                                 mode="single"
-                                                                selected={selectDate}
+                                                                selected={date}
                                                                 onSelect={SetSelectDate}
                                                                 initialFocus
                                                             />
@@ -139,7 +155,7 @@ const UpComingTaskCard = ({task, desc, date, taskId,fetchDataAPI}) => {
                                 </Dialog>
                             </div>
                             <div className={'w-full'}>
-                                <Dialog>
+                                <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
                                     <DialogTrigger asChild>
                                         <Button variant={'secondary'} className={'w-full rounded-none'}>Delete</Button>
                                     </DialogTrigger>
@@ -152,10 +168,10 @@ const UpComingTaskCard = ({task, desc, date, taskId,fetchDataAPI}) => {
                                             </div>
                                         </div>
                                         <DialogFooter className={'flex flex-row justify-between items-center w-full'}>
-                                            <Button type="submit">
+                                            <Button onClick={handleDeleteButton}>
                                                 Delete
                                             </Button>
-                                            <Button type="submit">
+                                            <Button onClick={handleCancelButton}>
                                                 Cancel
                                             </Button>
                                         </DialogFooter>
