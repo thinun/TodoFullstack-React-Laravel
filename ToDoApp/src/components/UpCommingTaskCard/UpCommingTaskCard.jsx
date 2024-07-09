@@ -70,6 +70,10 @@ const UpComingTaskCard = ({task, desc, date, taskId, fetchDataAPI}) => {
         setIsDeleteOpen(false)
     }
 
+    const handleDoneButton=()=>{
+        deleteTask(taskId)
+    }
+
 
     return (
         <div className={'MobileTaskCard bg-gray-100 w-full flex flex-row rounded-2xl mt-4'}>
@@ -94,7 +98,7 @@ const UpComingTaskCard = ({task, desc, date, taskId, fetchDataAPI}) => {
                     <PopoverContent className="w-auto m-0 p-0 bg-white">
                         <div className={'flex flex-col items-start'}>
                             <div className={'w-full'}>
-                                <Button variant={'secondary'} className={'w-full rounded-none'}>Done</Button>
+                                <Button variant={'secondary'} className={'w-full rounded-none'} onClick={handleDoneButton}>Done</Button>
                             </div>
                             <div className={'w-full'}>
                                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
