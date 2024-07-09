@@ -16,18 +16,43 @@ import {cn} from "@/lib/utils.js";
 import {Calendar as CalendarIcon} from "lucide-react";
 import {format} from "date-fns";
 import {Calendar} from "@/components/ui/calendar.jsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import axiosClient from "@/axios-client.js";
 
-const UpComingTaskCard = ({task,taskDate,des}) => {
-    const [date, setDate] = useState()
+
+const UpComingTaskCard = ({task, desc, date, taskId,fetchDataAPI}) => {
+    const [selectDate, SetSelectDate] = useState()
     const [taskName, setTaskName] = useState()
     const [description, setDescription] = useState()
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
 
+    useEffect(() => {
+        setTaskName(task)
+        setDescription(desc)
+        SetSelectDate(date)
+    }, [task, desc, date]);
 
-    const handleTaskAddButton = () => {
-        const formatedDate = format(date, "yyyy-MM-dd");
-        alert(taskName + " " + description + " " + formatedDate)
+    const handleTaskEdit = () => {
+        setIsDialogOpen(false)
+        const formatedDate = format(selectDate, "yyyy-MM-dd");
+        const payload = {
+            task: taskName,
+            description: description,
+            date: formatedDate
+        }
+        axiosClient.put(`/tasks/${taskId}`, payload).then((response) => {
+            if (response.status===201){
+                alert('Task Updated Successfully')
+            }
+            console.log(response)
+      //to refresh the page calling the fetchAPi function from myTask page
+            fetchDataAPI()
+        }).catch((error) => {
+            console.log(error)
+        })
+
     }
+
     return (
         <div className={'MobileTaskCard bg-gray-100 w-full flex flex-row rounded-2xl mt-4'}>
             <div className={'flex flex-col justify-start w-3/4 pl-6 p-4'}>
@@ -35,11 +60,11 @@ const UpComingTaskCard = ({task,taskDate,des}) => {
                     {task}
                 </div>
                 <div className={'text-xs text-gray-400'}>
-                    {des}
+                    {desc}
                 </div>
                 <div className={' flex flex-row justify-start gap-2 mt-4'}>
                     <div><Icon path={mdiClockTimeEightOutline} size={0.7}/></div>
-                    <div>{taskDate}</div>
+                    <div>{date}</div>
                 </div>
 
             </div>
@@ -54,7 +79,7 @@ const UpComingTaskCard = ({task,taskDate,des}) => {
                                 <Button variant={'secondary'} className={'w-full rounded-none'}>Done</Button>
                             </div>
                             <div className={'w-full'}>
-                                <Dialog>
+                                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                     <DialogTrigger asChild>
                                         <Button variant={'secondary'} className={'w-full rounded-none'}>Edit</Button>
                                     </DialogTrigger>
@@ -73,7 +98,7 @@ const UpComingTaskCard = ({task,taskDate,des}) => {
                                                     id="EditDescription"
                                                     defaultValue="Description"
                                                     className="col-span-3"
-                                                onChange={(e)=>setDescription(e.target.value)}/>
+                                                    onChange={(e) => setDescription(e.target.value)}/>
                                                 <div>
                                                     <Popover>
                                                         <PopoverTrigger asChild>
@@ -81,18 +106,19 @@ const UpComingTaskCard = ({task,taskDate,des}) => {
                                                                 variant={"outline"}
                                                                 className={cn(
                                                                     "w-[280px] justify-start text-left font-normal",
-                                                                    !date && "text-muted-foreground"
+                                                                    !selectDate && "text-muted-foreground"
                                                                 )}
                                                             >
                                                                 <CalendarIcon className="mr-2 h-4 w-4"/>
-                                                                {date ? format(date, "PPP") : <span>Pick a date</span>}
+                                                                {selectDate ? format(selectDate, "PPP") :
+                                                                    <span>Pick a date</span>}
                                                             </Button>
                                                         </PopoverTrigger>
                                                         <PopoverContent className="w-auto p-0">
                                                             <Calendar
                                                                 mode="single"
-                                                                selected={date}
-                                                                onSelect={setDate}
+                                                                selected={selectDate}
+                                                                onSelect={SetSelectDate}
                                                                 initialFocus
                                                             />
                                                         </PopoverContent>
@@ -103,7 +129,7 @@ const UpComingTaskCard = ({task,taskDate,des}) => {
                                         </div>
                                         <DialogFooter>
                                             <Button type="submit"
-                                                    onClick={handleTaskAddButton}>
+                                                    onClick={handleTaskEdit}>
                                                 Add
                                             </Button>
                                         </DialogFooter>

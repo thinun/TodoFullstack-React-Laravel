@@ -5,6 +5,7 @@ import HomeGrid from "@/components/HomeGrid/HomeGrid.jsx";
 import axiosClient from "@/axios-client.js";
 import { useState } from "react";
 
+
 const Home = () => {
     const [error, setError] = useState("");
 
