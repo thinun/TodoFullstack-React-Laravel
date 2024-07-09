@@ -1,0 +1,28 @@
+/* for larger devices */
+
+@media (min-width: 1024px) {
+    .hero-img {
+        height: 80vh;
+        width: 100%;
+
+    }
+
+    .hero {
+        margin-top: 15vh;
+    }
+
+    .hero-button:hover {
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+        transition: 0.3s ease;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+}
+
+
+/* for medium to mobile devices */
+@media (max-width: 1024px) {
+
+    .hero {
+        margin-top: 25px;
+    }
+}

@@ -1,0 +1,19 @@
+@media (min-width: 391px) and (max-width: 430px) {
+    .grid-large{
+        height: 20rem;
+    }
+    .grid-small{
+        height: 8rem;
+
+
+    }
+
+
+}
+
+.grid-large{
+        height: 19rem;
+    }
+    .grid-small{
+        height: 8rem;
+    }

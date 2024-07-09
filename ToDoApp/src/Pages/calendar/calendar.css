@@ -1,0 +1,106 @@
+@media (min-width: 374px) and (max-width: 390px) {
+    .calendar {
+        scale: 0.8;
+
+    }
+
+    .mobile {
+        margin-top: 0;
+
+    }
+}
+
+@media (max-width: 374px) {
+    .mobile {
+        margin-top: 0;
+
+    }
+
+    .calendar {
+        scale: 0.7;
+
+    }
+}
+
+@media (min-width: 400px) and (max-width: 768px) {
+    .calendar {
+        scale: 0.95;
+
+    }
+
+    .mobile {
+        margin-top: 40px;
+
+    }
+}
+
+@media (min-width: 360px) and (max-width: 374px) {
+    .calendar {
+        scale: 0.8;
+
+    }
+
+    .mobile {
+        margin-top: 0;
+
+    }
+}
+
+@media (max-width: 767px) {
+    .desktop {
+        display: none !important;
+    }
+
+    .calendar-desktop {
+        display: none !important;
+    }
+
+
+}
+
+@media (min-width: 768px) {
+    .calendar {
+        display: none !important;
+    }
+
+    .task-calendar {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 10px;
+        width: 100%;
+
+    }
+
+    .desktop {
+        width: 70%;
+    }
+
+    .calendar-desktop {
+        display: flex;
+        align-items: center;
+        justify-content: end;
+        width: 30%;
+        z-index: 0;
+        margin-right: 40px;
+    }
+
+}
+
+.calendar-addTasks:hover{
+    transition: 0.3s;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);;
+}
+
+@media (max-width: 830px) {
+     .desktop {
+        width: 60%;
+    }
+
+}
+
+
+
+
+
