@@ -13,48 +13,35 @@ import {
     DialogTrigger
 } from "@/components/ui/dialog.jsx";
 import {Input} from "@/components/ui/input.jsx";
-import { format } from "date-fns"
-import { Calendar as CalendarIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Calendar } from "@/components/ui/calendar"
+import {format} from "date-fns"
+import {Calendar as CalendarIcon} from "lucide-react"
+import {cn} from "@/lib/utils"
+import {Calendar} from "@/components/ui/calendar"
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
 
+import ButtonB from '../../components/Buttons/Buttons.jsx'
+import {useGlobalContext} from "@/context/ContextProvider.jsx";
+
 
 const MyTask = () => {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
-    const [tasks, setTasks] = useState([])
-    const [newDate, setNewDate] = useState(null);
+    const [date, setDate] = useState(null);
     const [newTask, setNewTask] = useState('')
     const [newDescription, setNewDescription] = useState('')
-
     const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const {fetchDataAPI, tasks} = useGlobalContext()
 
 
 // useEffect to call the fetchDataAPI when component mounts
     useEffect(() => {
         fetchDataAPI()
-    }, []);
+    }, [fetchDataAPI]);
 
-    // function to get the payload data from the database
-
-    const fetchDataAPI = () => {
-        setLoading(true)
-        axiosClient.get('/tasks').then((response) => {
-            setTasks(response.data)
-        }).catch((error) => {
-            setError("failed to fetch data")
-            if (error) {
-                alert(error.message)
-            }
-        })
-
-        setLoading(false)
-    }
 
 // function to send data to database
 
@@ -64,7 +51,7 @@ const MyTask = () => {
         const payload = {
             task: newTask,
             description: newDescription,
-            date: newDate
+            date: date
         }
 
         console.log(payload)
@@ -91,11 +78,11 @@ const MyTask = () => {
                 <Slideshow></Slideshow>
             </div>
             <div>
-                <div className={'flex flex-row items-center justify-between mt-6 text-xl w-full pl-10 pr-10'}>
-                    <div className={'font-bold'}>Up Coming Tasks</div>
-                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <div className={'flex flex-row items-center justify-between mt-10 text-xl w-full pl-10 pr-10'}>
+                    <div className={'font-bold'}>This Day Tasks</div>
+                    <div><Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                         <DialogTrigger asChild>
-                            <Button variant={'secondary'}>Add Task</Button>
+                            <ButtonB variant={'secondary'} className={'text-xl'}>Add Task</ButtonB>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px]">
                             <DialogHeader>
@@ -104,17 +91,17 @@ const MyTask = () => {
                             <div className="grid gap-4 py-4">
                                 <div className="flex flex-col items-start gap-4">
                                     <Input
-                                        id="Task"
-                                        placeholder={'Task'}
+                                        id="addTask"
+                                        defaultValue="Add Task"
                                         className="col-span-3"
                                         onChange={(e) => setNewTask(e.target.value)}
+
                                     />
                                     <Input
-                                        id="Description"
-                                        placeholder={'Description'}
-                                        className="col-span-3 row-span-3"
-                                        onChange={(e) => setNewDescription(e.target.value)}
-                                    />
+                                        id="addDescription"
+                                        defaultValue="Description"
+                                        className="col-span-3"
+                                        onChange={(e) => setNewDescription(e.target.value)}/>
                                     <div>
                                         <Popover>
                                             <PopoverTrigger asChild>
@@ -122,31 +109,34 @@ const MyTask = () => {
                                                     variant={"outline"}
                                                     className={cn(
                                                         "w-[280px] justify-start text-left font-normal",
-                                                        !newDate && "text-muted-foreground"
-                                                    )}>
+                                                        !date && "text-muted-foreground"
+                                                    )}
+                                                >
                                                     <CalendarIcon className="mr-2 h-4 w-4"/>
-                                                    {newDate ? format(newDate, "PPP") : <span>Pick a date</span>}
+                                                    {date ? format(date, "PPP") : <span>Pick a date</span>}
                                                 </Button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-auto p-0">
                                                 <Calendar
                                                     mode="single"
-                                                    selected={newDate}
-                                                    onSelect={setNewDate}
+                                                    selected={date}
+                                                    onSelect={setDate}
                                                     initialFocus
                                                 />
                                             </PopoverContent>
                                         </Popover>
                                     </div>
+
                                 </div>
                             </div>
                             <DialogFooter>
-                                <Button type="submit" onClick={handleTaskAddButton}>
+                                <Button type="submit"
+                                        onClick={handleTaskAddButton}>
                                     Add
                                 </Button>
                             </DialogFooter>
                         </DialogContent>
-                    </Dialog>
+                    </Dialog></div>
                 </div>
                 <div className={'flex flex-row items-center justify-start w-full text-base text-gray-400 pl-10'}>
                     2024/12/21

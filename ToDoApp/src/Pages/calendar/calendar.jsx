@@ -1,9 +1,8 @@
 import {Calendar} from "@/components/ui/calendar"
 import './calendar.css'
 import DesktopNavbar from "@/components/DesktopNavbar/DesktopNavbar.jsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import CalendarHeader from "@/components/CalendarHeader/CalendarHeader.jsx";
-import MobileTaskCard from "@/components/MobileTaskCard/MobileTaskCard.jsx";
 import {
     Dialog,
     DialogContent,
@@ -17,8 +16,11 @@ import {Input} from "@/components/ui/input.jsx";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.jsx";
 import {cn} from "@/lib/utils.js";
 import {Calendar as CalendarIcon} from "lucide-react";
-import {format} from "date-fns";
+import {format, isToday} from "date-fns";
 import ButtonB from '../../components/Buttons/Buttons.jsx'
+import axiosClient from "@/axios-client.js";
+import UpComingTaskCard from "@/components/UpCommingTaskCard/UpCommingTaskCard.jsx";
+import {useGlobalContext} from "@/context/ContextProvider.jsx";
 
 
 const CalendarPage = () => {
@@ -26,11 +28,40 @@ const CalendarPage = () => {
     const [date, setDate] = useState()
     const [taskName, setTaskName] = useState()
     const [description, setDescription] = useState()
+    const [isDialogOpen, setIsDialogOpen] = useState()
+    const {tasks, fetchDataAPI, loading, error} = useGlobalContext()
 
 
-    const handleTaskAddButton =()=>{
+
+// today date
+    const todayDate = format(new Date(), 'yyyy/MM/dd');
+
+
+
+// using use Effect to call the fetch api function
+
+    useEffect(() => {
+        fetchDataAPI()
+    }, [fetchDataAPI]);
+
+
+    // function to send data to database
+    const handleTaskAddButton = () => {
         const formatedDate = format(date, "yyyy-MM-dd");
-        alert(taskName +" "+description+" "+ formatedDate)
+        setIsDialogOpen(false)
+
+        const payload = {
+            task: taskName,
+            description: description,
+            date: formatedDate
+        }
+
+        axiosClient.post('/tasks', payload).then((response) => {
+            fetchDataAPI()
+            console.log(response)
+        }).catch((error) => {
+            console.log(error)
+        })
     }
 
 
@@ -43,10 +74,17 @@ const CalendarPage = () => {
                     <div className={'task-calendar flex flex-row items-center'}>
                         <div className={'desktop pl-10 pr-10 mt-4'}>
                             <div className={'text-xl font-bold'}>Today Tasks</div>
-                            <MobileTaskCard/>
-                            <MobileTaskCard/>
-                            <MobileTaskCard/>
-                            <MobileTaskCard/>
+                            {tasks.map((task) => (
+                                isToday(new Date(task.date)) ? (
+                                        <div key={task.id} >
+                                            <UpComingTaskCard task={task.task} desc={task.description} date={task.date}
+                                                              taskId={task.id}
+                                                              fetchDataAPI={fetchDataAPI}/>
+                                        </div>
+
+                                ) : null
+                            ))}
+
                         </div>
                         <div className={'calendar-desktop'}>
                             <Calendar
@@ -66,9 +104,9 @@ const CalendarPage = () => {
 
                     <div className={'flex flex-row items-center justify-between mt-10 text-xl w-full pl-10 pr-10'}>
                         <div className={'font-bold'}>This Day Tasks</div>
-                        <div><Dialog>
+                        <div><Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogTrigger asChild>
-                                 <ButtonB variant={'secondary'} className={'text-xl'}>Add Task</ButtonB>
+                                <ButtonB variant={'secondary'} className={'text-xl'}>Add Task</ButtonB>
                             </DialogTrigger>
                             <DialogContent className="sm:max-w-[425px]">
                                 <DialogHeader>
@@ -80,14 +118,14 @@ const CalendarPage = () => {
                                             id="addTask"
                                             defaultValue="Add Task"
                                             className="col-span-3"
-                                            onChange={(e)=>setTaskName(e.target.value)}
+                                            onChange={(e) => setTaskName(e.target.value)}
 
                                         />
                                         <Input
                                             id="addDescription"
                                             defaultValue="Description"
                                             className="col-span-3"
-                                            onChange={(e)=>setDescription(e.target.value)}/>
+                                            onChange={(e) => setDescription(e.target.value)}/>
                                         <div>
                                             <Popover>
                                                 <PopoverTrigger asChild>
@@ -128,11 +166,17 @@ const CalendarPage = () => {
                         2024/12/21
                     </div>
                     <div className={'pl-10 pr-10 mt-6 w-full'}>
-                        <MobileTaskCard/>
-                        <MobileTaskCard/>
-                        <MobileTaskCard/>
-                        <MobileTaskCard/>
-                        <MobileTaskCard/>
+
+                        {tasks.map((task) => (
+
+                            <div key={task.id}>
+                                {loading && <div>Loading...</div>}
+                                <UpComingTaskCard task={task.task} desc={task.description} date={task.date}
+                                                  taskId={task.id}
+                                                  fetchDataAPI={fetchDataAPI}/>
+                            </div>
+                        ))
+                        }
                     </div>
                 </div>
             </div>

@@ -32,6 +32,8 @@ const UpComingTaskCard = ({task, desc, date, taskId,fetchDataAPI}) => {
         SetSelectDate(date)
     }, [task, desc, date]);
 
+
+// function to update tasks
     const handleTaskEdit = () => {
         setIsDialogOpen(false)
         const formatedDate = format(selectDate, "yyyy-MM-dd");
