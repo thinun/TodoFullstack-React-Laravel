@@ -64,7 +64,8 @@ const MyTask = () => {
     }
 
 
-    const noOfTask = 3;
+    const noOfTask = tasks.length;
+
 
     return (
         <div>
@@ -149,6 +150,7 @@ const MyTask = () => {
                     <div key={task.id}>
                         {loading && <div>Loading...</div>}
                         <UpComingTaskCard task={task.task} desc={task.description} date={task.date}
+                                          taskId={task.id}
                                           fetchDataAPI={fetchDataAPI}/>
                     </div>
                 ))
