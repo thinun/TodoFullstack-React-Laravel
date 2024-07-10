@@ -59,7 +59,8 @@ const CalendarPage = () => {
         })
     }
 
-
+    const today = new Date()
+    const todaydate = format(today, "yyyy-MM-dd");
 
 
     return (
@@ -162,7 +163,7 @@ const CalendarPage = () => {
                         </Dialog></div>
                     </div>
                     <div className={'flex flex-row items-center justify-start w-full text-base text-gray-400 pl-10'}>
-                        2024/12/21
+                        {todaydate}
                     </div>
                     <div className={'pl-10 pr-10 mt-6 w-full'}>
 

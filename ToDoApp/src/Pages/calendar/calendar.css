@@ -81,7 +81,8 @@
         display: flex;
         align-items: center;
         justify-content: end;
-        width: 30%;
+        max-width: 30%;
+        max-height: 3rem;
         z-index: 0;
         margin-right: 40px;
     }
