@@ -64,7 +64,7 @@ const CalendarPage = () => {
 
     return (
         <>
-            <div>
+            <div className={'mb-10'}>
                 <CalendarHeader/>
                 <DesktopNavbar/>
                 <div className={'mobile flex flex-col items-center justify-between'}>
