@@ -35,7 +35,6 @@ const MyTask = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const {fetchDataAPI, tasks} = useGlobalContext()
 
-
 // useEffect to call the fetchDataAPI when component mounts
     useEffect(() => {
         fetchDataAPI()
