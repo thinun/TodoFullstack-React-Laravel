@@ -90,7 +90,7 @@ const CalendarPage = () => {
                                 mode="single"
                                 selected={date}
                                 onSelect={setDate}
-                                className="calendar-com rounded-md scale-x-125 scale-y-125 mt-10"/>
+                                className="calendar-com rounded-md  mt-10"/>
                         </div>
                         <div className={'calendar'}>
                             <Calendar
