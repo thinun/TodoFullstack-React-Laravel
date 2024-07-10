@@ -17,10 +17,10 @@ import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.j
 import {cn} from "@/lib/utils.js";
 import {Calendar as CalendarIcon} from "lucide-react";
 import {format, isToday} from "date-fns";
-import ButtonB from '../../components/Buttons/Buttons.jsx'
 import axiosClient from "@/axios-client.js";
 import UpComingTaskCard from "@/components/UpCommingTaskCard/UpCommingTaskCard.jsx";
 import {useGlobalContext} from "@/context/ContextProvider.jsx";
+import ButtonVariant from "@/components/Buttons/Buttons.jsx";
 
 
 const CalendarPage = () => {
@@ -105,7 +105,7 @@ const CalendarPage = () => {
                         <div className={'font-bold'}>This Day Tasks</div>
                         <div><Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogTrigger asChild>
-                                <ButtonB variant={'secondary'} className={'text-xl'}>Add Task</ButtonB>
+                                <ButtonVariant variant={'secondary'}>Add Task</ButtonVariant>
                             </DialogTrigger>
                             <DialogContent className="sm:max-w-[425px]">
                                 <DialogHeader>

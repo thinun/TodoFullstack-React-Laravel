@@ -1,9 +1,9 @@
 import MyTaskHeader from '@/components/MyTaskHeader/MyTaskHeader.jsx';
-import Button from '@/components/Buttons/Buttons.jsx';
 import Slideshow from "@/components/imageSlider/ImageSlider.jsx";
 import UpComingTaskCard from "@/components/UpCommingTaskCard/UpCommingTaskCard.jsx";
 import axiosClient from "@/axios-client.js";
 import {useEffect, useState} from "react";
+import {Button} from "@/components/ui/button.jsx";
 import {
     Dialog,
     DialogContent,
@@ -23,12 +23,11 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 
-import ButtonB from '../../components/Buttons/Buttons.jsx'
+import ButtonVariant from '../../components/Buttons/Buttons.jsx'
 import {useGlobalContext} from "@/context/ContextProvider.jsx";
 
 
 const MyTask = () => {
-    const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [date, setDate] = useState(null);
     const [newTask, setNewTask] = useState('')
@@ -46,17 +45,16 @@ const MyTask = () => {
 // function to send data to database
 
     const handleTaskAddButton = () => {
+        const formatedDate = format(date, "yyyy-MM-dd");
         setIsDialogOpen(false)
 
         const payload = {
             task: newTask,
             description: newDescription,
-            date: date
+            date: formatedDate
         }
-
-        console.log(payload)
-
         axiosClient.post('/tasks', payload).then((response) => {
+            fetchDataAPI()
             console.log(response)
         }).catch((error) => {
             console.log(error)
@@ -81,63 +79,64 @@ const MyTask = () => {
             <div>
                 <div className={'flex flex-row items-center justify-between mt-10 text-xl w-full pl-10 pr-10'}>
                     <div className={'font-bold'}>This Day Tasks</div>
-                    <div><Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                        <DialogTrigger asChild>
-                            <ButtonB variant={'secondary'} className={'text-xl'}>Add Task</ButtonB>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]">
-                            <DialogHeader>
-                                <DialogTitle>Add Task</DialogTitle>
-                            </DialogHeader>
-                            <div className="grid gap-4 py-4">
-                                <div className="flex flex-col items-start gap-4">
-                                    <Input
-                                        id="addTask"
-                                        defaultValue="Add Task"
-                                        className="col-span-3"
-                                        onChange={(e) => setNewTask(e.target.value)}
+                    <div>
+                        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                            <DialogTrigger asChild>
+                                <ButtonVariant variant={'secondary'}>Add Task</ButtonVariant>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[425px]">
+                                <DialogHeader>
+                                    <DialogTitle>Add Task</DialogTitle>
+                                </DialogHeader>
+                                <div className="grid gap-4 py-4">
+                                    <div className="flex flex-col items-start gap-4">
+                                        <Input
+                                            id="addTask"
+                                            defaultValue="Add Task"
+                                            className="col-span-3"
+                                            onChange={(e) => setNewTask(e.target.value)}
 
-                                    />
-                                    <Input
-                                        id="addDescription"
-                                        defaultValue="Description"
-                                        className="col-span-3"
-                                        onChange={(e) => setNewDescription(e.target.value)}/>
-                                    <div>
-                                        <Popover>
-                                            <PopoverTrigger asChild>
-                                                <Button
-                                                    variant={"outline"}
-                                                    className={cn(
-                                                        "w-[280px] justify-start text-left font-normal",
-                                                        !date && "text-muted-foreground"
-                                                    )}
-                                                >
-                                                    <CalendarIcon className="mr-2 h-4 w-4"/>
-                                                    {date ? format(date, "PPP") : <span>Pick a date</span>}
-                                                </Button>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-auto p-0">
-                                                <Calendar
-                                                    mode="single"
-                                                    selected={date}
-                                                    onSelect={setDate}
-                                                    initialFocus
-                                                />
-                                            </PopoverContent>
-                                        </Popover>
+                                        />
+                                        <Input
+                                            id="addDescription"
+                                            defaultValue="Description"
+                                            className="col-span-3"
+                                            onChange={(e) => setNewDescription(e.target.value)}/>
+                                        <div>
+                                            <Popover>
+                                                <PopoverTrigger asChild>
+                                                    <Button
+                                                        variant={"outline"}
+                                                        className={cn(
+                                                            "w-[280px] justify-start text-left font-normal",
+                                                            !date && "text-muted-foreground"
+                                                        )}
+                                                    >
+                                                        <CalendarIcon className="mr-2 h-4 w-4"/>
+                                                        {date ? format(date, "PPP") : <span>Pick a date</span>}
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-auto p-0">
+                                                    <Calendar
+                                                        mode="single"
+                                                        selected={date}
+                                                        onSelect={setDate}
+                                                        initialFocus
+                                                    />
+                                                </PopoverContent>
+                                            </Popover>
+                                        </div>
+
                                     </div>
-
                                 </div>
-                            </div>
-                            <DialogFooter>
-                                <Button type="submit"
-                                        onClick={handleTaskAddButton}>
-                                    Add
-                                </Button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog></div>
+                                <DialogFooter>
+                                    <Button type="submit"
+                                            onClick={handleTaskAddButton}>
+                                        Add
+                                    </Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog></div>
                 </div>
                 <div className={'flex flex-row items-center justify-start w-full text-base text-gray-400 pl-10'}>
                     2024/12/21
